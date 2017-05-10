@@ -21,6 +21,7 @@ use tokio_service::Service;
 use service_fn::service_fn;
 use std::thread;
 use std::time::Duration;
+use std::io;
 
 pub fn main() {
     let mut core = Core::new().unwrap();
@@ -34,7 +35,8 @@ pub fn main() {
             || {
                 Ok(service_fn(|msg| {
                     println!("SERVER: {:?}", msg);
-                    Ok(msg)
+                    //Ok(msg)
+                    Err(io::Error::new(io::ErrorKind::Other, "service error"))
                 }))
             });
     });

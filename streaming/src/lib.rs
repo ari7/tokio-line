@@ -14,6 +14,9 @@ extern crate tokio_proto;
 extern crate tokio_service;
 extern crate bytes;
 
+#[macro_use]
+extern crate log;
+
 use futures::{Future, Stream, Poll};
 use futures::sync::mpsc;
 
@@ -328,6 +331,9 @@ impl Encoder for LineCodec {
                 }
             }
             Frame::Error { error } => {
+
+                trace!("encode Error: {:?}", error);
+
                 // Our protocol does not support error frames, so this results
                 // in a connection level error, which will terminate the socket.
                 return Err(error);

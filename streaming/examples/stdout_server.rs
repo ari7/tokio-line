@@ -15,6 +15,10 @@ extern crate tokio_core;
 extern crate tokio_service;
 extern crate service_fn;
 
+#[macro_use]
+extern crate log;
+extern crate env_logger;
+
 use line::{Client, Line, LineStream};
 
 use futures::{future, Future, Stream, Sink};
@@ -23,9 +27,12 @@ use tokio_service::Service;
 use service_fn::service_fn;
 
 use std::{io, thread};
+use std::io::{Error, ErrorKind};
 use std::time::Duration;
 
 pub fn main() {
+    env_logger::init().unwrap();
+
     let mut core = Core::new().unwrap();
 
     // This brings up our server.
@@ -39,7 +46,8 @@ pub fn main() {
                     match msg {
                         Line::Once(line) => {
                             println!("{}", line);
-                            Box::new(future::done(Ok(Line::Once("Ok".to_string()))))
+                            //Box::new(future::done(Ok(Line::Once("Ok".to_string()))))
+                            Box::new(future::result(Err(Error::new(ErrorKind::Other, "service error"))))
                         }
                         Line::Stream(body) => {
                             let resp = body
@@ -65,6 +73,11 @@ pub fn main() {
         Client::connect(&addr, &handle)
             .and_then(|client| {
                 client.call(Line::Once("Hello".to_string()))
+                    .then(|res| {
+                        println!("got some result");
+
+                        res
+                    })
                     .and_then(move |response| {
                         println!("CLIENT: {:?}", response);
 
