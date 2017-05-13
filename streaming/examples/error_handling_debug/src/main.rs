@@ -38,11 +38,12 @@ const USAGE: &'static str = "
 Debug.
 
 Usage:
-  error_handling_debug [--server]
+  error_handling_debug (--server | --client)
 
 Options:
   -h --help     Show this screen.
   --server      Start as a server.
+  --client      Start as a client.
 ";
 
     
