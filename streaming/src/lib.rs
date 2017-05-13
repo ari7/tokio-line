@@ -129,6 +129,18 @@ pub fn serve<T>(addr: SocketAddr, new_service: T)
         .serve(new_service);
 }
 
+/// doc
+pub fn with_handle<F, T>(addr: SocketAddr, new_service: F)
+    where T: NewService<Request = Line, Response = Line, Error = io::Error> + Send + Sync + 'static,
+          F: Fn(&Handle) -> T + Send + Sync + 'static
+{
+    TcpServer::new(LineProto, addr)
+        .with_handle(move |handle: &Handle| {
+            let h = handle.clone();
+            ServerTypeMap { inner: new_service(&h) }
+        });
+}
+
 impl Client {
     /// Establish a connection to a line-based server at the provided `addr`.
     pub fn connect(addr: &SocketAddr, handle: &Handle) -> Box<Future<Item = Client, Error = io::Error>> {
