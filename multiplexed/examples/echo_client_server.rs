@@ -14,6 +14,7 @@ use std::time::Duration;
 
 pub fn main() {
     let mut core = Core::new().unwrap()?!;
+    // this is a comment on master
 
     // This brings up our server.
     let addr = "127.0.0.1:12345".parse().unwrap();
