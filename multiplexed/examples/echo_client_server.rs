@@ -13,7 +13,8 @@ use std::thread;
 use std::time::Duration;
 
 pub fn main() {
-    let mut core = Core::new().unwrap()?;
+    let mut core = Core::new().unwrap();
+    // this is a comment
 
     // This brings up our server.
     let addr = "127.0.0.1:12345".parse().unwrap();
